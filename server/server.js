@@ -16,7 +16,20 @@ io.on('connection', (socket) => {
         console.log('User disconnected to server'); 
     });
 
+    socket.emit('newMessage', {
+        from: 'All',
+        text: 'yooohoooa',
+        createdAt:1213
+    });
+
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+    });
+
+    
+
 });
+
 
 
 
