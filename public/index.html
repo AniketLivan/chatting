@@ -6,9 +6,14 @@
         
     </head>
     <body>
-        <p>
-            Welcome to the chat section
-        </p>
+        <p>Welcome to the chat section</p>
+        <ol id="messages"></ol>
+        <form id = "message-form">
+            <input name="message" type="text" placeholder="Message" />
+            <button>send</button>
+
+        </form>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script src = "/socket.io/socket.io.js"></script>
         <script src = "codejs/index.js"></script>
 
