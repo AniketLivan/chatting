@@ -11,21 +11,28 @@ socket.on('disconnect', () => {
 });
 
 socket.on('newLocationMessage', (message) => {
-    var li = jQuery('<li></li>');
-    var a = jQuery('<a target="_blank">My Current Location</a>');
-    li.text(`${message.from}: `);
-    a.attr('href', message.url);
-    li.append(a);
-    jQuery('#messages').append(li);
+   
+    var template = jQuery('#location-template').html();
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+    var html = Mustache.render(template, {
+        from: message.from,
+        url: message.url,
+        createdAt: formattedTime
+    });
+    
+    jQuery('#messages').append(html);
 });
 
 socket.on('newMessage', (message) => {
-    console.log('newMessage', message);
+    var formattedTime = moment(message.createdAt).format('h:mm a')
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+        text:message.text,
+        from: message.from ,
+        createdAt: formattedTime
+    });
 
-    var li = jQuery('<li></li>');
-    li.text(`${message.from}: ${message.text}`);
-
-    jQuery('#messages').append(li);
+    jQuery('#messages').append(html);
 });
 
 jQuery('#message-form').on('submit', (e) => {
@@ -45,16 +52,16 @@ document.querySelector('#send-location').addEventListener('click', () => {
     if (!navigator.geolocation) {
         return alert('Geolocation is not supported by your browser');
     }
-    $sendLocationButton.setAttribute('disabled', 'disabled').text('Sending Location...');
+    $sendLocationButton.setAttribute('disabled', 'disabled');
 
     navigator.geolocation.getCurrentPosition((position) => {
-        $sendLocationButton.removeAttribute('disabled').text('Send Location');
+        $sendLocationButton.removeAttribute('disabled');
         socket.emit('sendLocation', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         });
     }, () => {
-        $sendLocationButton.removeAttribute('disabled').text('Send Location');
+        $sendLocationButton.removeAttribute('disabled');
         alert('unable to fetch location data');
     });
 });
